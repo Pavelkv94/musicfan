@@ -10,8 +10,7 @@ const Header = ({ renderAccountBar }: Props) => {
         <header className={styles.header}>
             <div className={styles.container}>
                 <div className={styles.linksBlock}>
-                    <Link to="/">Main</Link>
-                    <Link to="/my-playlists">My Playlists</Link>
+                    <Link to="/">Playlists</Link>
                     <Link to="/oauth/callback">Login</Link>
                 </div>
 

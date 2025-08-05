@@ -3,18 +3,23 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Pagination } from '../shared/ui/pagination/pagination';
 import { useState } from 'react';
 
-const Playlist = () => {
+type Props = {
+    userId: string;
+};
+
+const Playlist = ({ userId }: Props) => {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
 
     const { data: playlists, isFetching } = useQuery({
-        queryKey: ['playlists', page, search],
+        queryKey: ['playlists', page, search, userId],
         queryFn: async ({ signal }) => {
             const res = await client.GET('/playlists', {
                 params: {
                     query: {
                         pageNumber: page,
-                        search: search
+                        search: search,
+                        userId: userId
                     }
                 },
                 signal // cancel request when user change page
