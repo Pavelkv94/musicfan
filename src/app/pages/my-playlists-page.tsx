@@ -1,9 +1,13 @@
 import { Navigate } from '@tanstack/react-router';
 import { useMeQuery } from '../../features/auth/api/use-me-query';
-import Playlist from '../../features/playlist';
+import AddPlaylistForm from '../../features/playlists/add-playlist/ui/add-playlist-form';
+import Playlist from '../../widgets/playlists/playlist';
+import EditPlaylistForm from '../../features/playlists/edit-playlist/ui/edit-playlist-form';
+import { useState } from 'react';
 
 function MyPlaylistsPage() {
     const { data: me, isPending } = useMeQuery();
+    const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
 
     if (isPending) {
         return <div>Loading...</div>;
@@ -15,7 +19,16 @@ function MyPlaylistsPage() {
 
     return (
         <div>
-            <Playlist userId={me.userId} />
+            <h2>My Playlists</h2>
+            <hr />
+            <div>
+                <AddPlaylistForm />
+            </div>
+            <hr />
+            <div style={{ display: 'flex' }}>
+                <Playlist userId={me.userId} onPlaylistClick={setSelectedPlaylistId} />
+                {selectedPlaylistId && <EditPlaylistForm playlistId={selectedPlaylistId} />}
+            </div>
         </div>
     );
 }

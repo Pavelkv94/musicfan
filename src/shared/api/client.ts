@@ -68,13 +68,20 @@ const myMiddleware: Middleware = {
             //@ts-expect-error get original request to retry it after refresh
             const originalRequest = request._retryRequest;
 
-            const retryRequest = new Request(originalRequest.url, {
+            const requestInit: RequestInit = {
                 method: originalRequest.method,
-                headers: new Headers(originalRequest.headers),
-                body: originalRequest.body
-            });
-            retryRequest.headers.set('Authorization', `Bearer ${localStorage.getItem('musicfan-accessToken')}`);
+                headers: new Headers(originalRequest.headers)
+            };
 
+            // Only add body and duplex if the original request has a body
+            if (originalRequest.body) {
+                requestInit.body = originalRequest.body;
+                (requestInit as RequestInit & { duplex: string }).duplex = 'half';
+            }
+
+            const retryRequest = new Request(originalRequest.url, requestInit);
+            retryRequest.headers.set('Authorization', `Bearer ${localStorage.getItem('musicfan-accessToken')}`);
+            console.log('retryRequest', retryRequest);
             return fetch(retryRequest);
         } catch (error) {
             console.error(error);

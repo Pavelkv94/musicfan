@@ -1,9 +1,9 @@
-import Playlist from '../../features/playlist';
+import Playlist from '../../widgets/playlists/playlist';
 
 function PlaylistsPage() {
     return (
         <div>
-            <Playlist />
+            <Playlist userId={''} />
         </div>
     );
 }
