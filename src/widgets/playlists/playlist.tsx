@@ -1,9 +1,8 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import client from '../../shared/api/client';
 import { Pagination } from '../../shared/ui/pagination/pagination';
 import { useMeQuery } from '../../features/auth/api/use-me-query';
 import DeletePlaylist from '../../features/playlists/delete-playlist/ui/delete-playlist';
+import { usePlaylistQuery } from './api/use-playlist-query';
 
 type Props = {
     userId?: string;
@@ -17,22 +16,10 @@ const Playlist = ({ userId, onPlaylistClick, isSearch = false }: Props) => {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
 
-    const key = userId ? ['playlists', 'my', userId] : ['playlists', page, search];
-    const queryparams = userId ? { userId: userId } : { pageNumber: page, search: search };
-
-    const { data: playlists, isFetching } = useQuery({
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps
-        queryKey: key,
-        queryFn: async ({ signal }) => {
-            const res = await client.GET('/playlists', {
-                params: {
-                    query: queryparams
-                },
-                signal // cancel request when user change page
-            });
-            return res.data;
-        },
-        placeholderData: keepPreviousData
+    const { data: playlists, isFetching } = usePlaylistQuery({
+        page: page,
+        search: search,
+        userId: userId
     });
 
     const handlePageChange = (page: number) => {

@@ -1,10 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import client from '../../../../shared/api/client';
 import type { SchemaCreatePlaylistRequestPayload } from '../../../../shared/api/schema';
+import { useAddPlaylistMutation } from '../api/add-playlist-mutation';
 
 function AddPlaylistForm() {
-    const queryClient = useQueryClient();
     const form = useForm<SchemaCreatePlaylistRequestPayload>({
         defaultValues: {
             title: '',
@@ -12,16 +10,7 @@ function AddPlaylistForm() {
         }
     });
 
-    const { mutate: addPlaylist, isPending } = useMutation({
-        mutationFn: async (data: SchemaCreatePlaylistRequestPayload) => {
-            const response = await client.POST('/playlists', { body: data });
-            return response.data;
-        },
-        onSuccess: () => {
-            form.reset();
-            queryClient.invalidateQueries({ queryKey: ['playlists'], refetchType: 'active' });
-        }
-    });
+    const { mutate: addPlaylist, isPending } = useAddPlaylistMutation({ form });
 
     const onSubmit = (data: SchemaCreatePlaylistRequestPayload) => {
         addPlaylist(data);
