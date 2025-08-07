@@ -6,26 +6,27 @@ import { useMeQuery } from '../../features/auth/api/use-me-query';
 import DeletePlaylist from '../../features/playlists/delete-playlist/ui/delete-playlist';
 
 type Props = {
-    userId: string;
+    userId?: string;
     onPlaylistClick?: (playlistId: string) => void;
+    isSearch?: boolean;
 };
 
-const Playlist = ({ userId, onPlaylistClick }: Props) => {
+const Playlist = ({ userId, onPlaylistClick, isSearch = false }: Props) => {
     const { data: me } = useMeQuery();
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
 
+    const key = userId ? ['playlists', 'my', userId] : ['playlists', page, search];
+    const queryparams = userId ? { userId: userId } : { pageNumber: page, search: search };
+
     const { data: playlists, isFetching } = useQuery({
-        queryKey: ['playlists', page, search, userId],
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps
+        queryKey: key,
         queryFn: async ({ signal }) => {
             const res = await client.GET('/playlists', {
                 params: {
-                    query: {
-                        pageNumber: page,
-                        search: search,
-                        userId: userId
-                    }
+                    query: queryparams
                 },
                 signal // cancel request when user change page
             });
@@ -40,7 +41,7 @@ const Playlist = ({ userId, onPlaylistClick }: Props) => {
 
     return (
         <div>
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)} />
+            {isSearch && <input type="text" value={search} onChange={e => setSearch(e.target.value)} />}
             <hr />
             <Pagination current={page} pagesCount={playlists?.meta.pagesCount || 0} changePageNumber={handlePageChange} isFetching={isFetching} />
             <div>

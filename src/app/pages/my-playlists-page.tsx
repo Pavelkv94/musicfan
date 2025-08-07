@@ -27,7 +27,7 @@ function MyPlaylistsPage() {
             <hr />
             <div style={{ display: 'flex' }}>
                 <Playlist userId={me.userId} onPlaylistClick={setSelectedPlaylistId} />
-                {selectedPlaylistId && <EditPlaylistForm playlistId={selectedPlaylistId} />}
+                <EditPlaylistForm playlistId={selectedPlaylistId} />
             </div>
         </div>
     );

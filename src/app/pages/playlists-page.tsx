@@ -3,7 +3,7 @@ import Playlist from '../../widgets/playlists/playlist';
 function PlaylistsPage() {
     return (
         <div>
-            <Playlist userId={''} />
+            <Playlist isSearch={true} />
         </div>
     );
 }
